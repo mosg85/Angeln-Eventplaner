@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Meine Events - Angel-Event-Planer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation (identisch mit Startseite) */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+
+        /* Hauptbereich */
+        .user-events-container {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .user-events-container h1 {
+            color: #0D3B66;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Event-Karten – genau wie auf der Startseite */
+        .event-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+        }
+        .event-image {
+            background: linear-gradient(145deg, #2A9D8F, #0D3B66);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-size: 4rem;
+            flex: 0 0 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .event-details {
+            padding: 25px;
+            flex: 1;
+            min-width: 250px;
+        }
+        .event-details h3 {
+            font-size: 1.8rem;
+            color: #0D3B66;
+            margin-bottom: 10px;
+        }
+        .event-meta {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            color: #555;
+        }
+        .event-meta i {
+            margin-right: 5px;
+            color: #2A9D8F;
+        }
+        .event-description {
+            margin: 15px 0;
+            color: #333;
+        }
+        .event-status {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .status-paid {
+            background: #28a745;
+            color: white;
+        }
+        .status-unpaid {
+            background: #ffc107;
+            color: #333;
+        }
+        .status-cash {
+            background: #6c757d;
+            color: white;
+        }
+        .event-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2A9D8F, #0D3B66);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .empty-state i {
+            font-size: 4rem;
+            color: #2A9D8F;
+            margin-bottom: 20px;
+        }
+        .empty-state p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+        }
+        .footer a {
+            color: #f4d03f;
+            text-decoration: none;
+        }
+
+        /* Mobile Optimierung */
+        @media (max-width: 600px) {
+            .event-card {
+                flex-direction: column;
+            }
+            .event-image {
+                flex: 0 0 auto;
+                width: 100%;
+                padding: 20px;
+            }
+            .event-status {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="/">Start</a></li>
+                    <li><a href="/user-events.html" class="active">Meine Events</a></li>
+                    <li><a href="/login.html" id="loginLink">Anmelden</a></li>
+                    <li><a href="/register.html" id="registerLink">Registrieren</a></li>
+                    <li><a href="/admin" id="adminLink" style="display: none;">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="user-events-container">
+        <h1><i class="fas fa-calendar-check"></i> Meine Events</h1>
+        <div id="eventsList">
+            <div class="loading">Lade deine Events...</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> | 
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // === MENÜ-TOGGLE ===
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('menuToggle');
+            const menu = document.getElementById('menu');
+            if (toggle && menu) {
+                toggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('show');
+                });
+                menu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.remove('show');
+                    });
+                });
+                document.addEventListener('click', function(e) {
+                    if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+                        menu.classList.remove('show');
+                    }
+                });
+            }
+
+            // Benutzerstatus prüfen und Events laden
+            checkUserAndLoad();
+        });
+
+        // === LOGIN-STATUS ===
+        async function checkUserAndLoad() {
+            try {
+                const res = await fetch('/api/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    const user = data.user;
+                    // Links anpassen
+                    document.getElementById('loginLink').style.display = 'none';
+                    document.getElementById('registerLink').style.display = 'none';
+                    if (user.role === 'admin') {
+                        document.getElementById('adminLink').style.display = 'inline-block';
+                    }
+                } else {
+                    // Nicht eingeloggt -> zurück zur Startseite
+                    window.location.href = '/';
+                    return;
+                }
+            } catch (e) {
+                window.location.href = '/';
+                return;
+            }
+            loadUserEvents();
+        }
+
+        // === USER-EVENTS LADEN ===
+        async function loadUserEvents() {
+            try {
+                const response = await fetch('/api/user/events');
+                if (!response.ok) {
+                    throw new Error('Fehler beim Laden');
+                }
+                const events = await response.json();
+                const container = document.getElementById('eventsList');
+                container.innerHTML = '';
+
+                if (events.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-fish"></i>
+                            <p>Du hast dich noch für kein Event angemeldet.</p>
+                            <a href="/#events" class="btn" style="margin-top: 20px;">Events entdecken</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                events.forEach(event => {
+                    const card = createEventCard(event);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                document.getElementById('eventsList').innerHTML = '<p>Fehler beim Laden der Events</p>';
+            }
+        }
+
+        // === EVENT-KARTE ERSTELLEN ===
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+
+            const eventDate = new Date(event.date).toLocaleDateString('de-DE', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            // Status-Badge
+            let statusClass = '';
+            let statusText = '';
+            if (event.userPaymentMethod === 'paypal') {
+                statusClass = event.userPaid ? 'status-paid' : 'status-unpaid';
+                statusText = event.userPaid ? 'Bezahlt (PayPal)' : 'Nicht bezahlt (PayPal)';
+            } else {
+                statusClass = 'status-cash';
+                statusText = 'Barzahlung (vor Ort)';
+            }
+
+            // Stornierungsbutton nur anzeigen, wenn Event noch nicht gestartet (currentRound === 0)
+            let cancelButton = '';
+            if (event.currentRound === 0) {
+                cancelButton = `<button class="btn btn-small btn-danger" onclick="cancelEvent(${event.id})">Stornieren</button>`;
+            }
+
+            card.innerHTML = `
+                <div class="event-image">
+                    <i class="${event.image || 'fas fa-fish'}"></i>
+                </div>
+                <div class="event-details">
+                    <h3>${event.title}</h3>
+                    <div class="event-meta">
+                        <span><i class="far fa-calendar-alt"></i> ${eventDate}</span>
+                        <span><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                        <span><i class="fas fa-euro-sign"></i> ${event.price}€</span>
+                    </div>
+                    <p class="event-description">${event.description}</p>
+                    <div class="event-status">
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                        <div class="event-actions">
+                            <button class="btn btn-small btn-success" onclick="window.location.href='/event-lake.html?id=${event.id}'">See-Ansicht</button>
+                            ${cancelButton}
+                        </div>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // === STORNIERUNG ===
+        async function cancelEvent(eventId) {
+            if (!confirm('Möchtest du deine Teilnahme wirklich stornieren?')) return;
+            try {
+                const response = await fetch(`/api/events/${eventId}/cancel`, { method: 'POST' });
+                const data = await response.json();
+                if (data.success) {
+                    alert('Teilnahme erfolgreich storniert.');
+                    loadUserEvents(); // Liste neu laden
+                } else {
+                    alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                alert('Fehler bei der Stornierung.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Admin-Panel - Angel-Event-Planer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+        /* Header und Navigation */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+            color: #f4d03f;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+        /* Tabs */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 12px 20px;
+            background: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #0D3B66;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        .tab-btn.active {
+            background: #0D3B66;
+            color: white;
+        }
+        .tab-btn i {
+            margin-right: 8px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* Admin Header */
+        .admin-header {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .admin-header h2 {
+            color: #0D3B66;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2A9D8F, #0D3B66);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+        /* Event Card */
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .event-title {
+            font-size: 1.2rem;
+            color: #0D3B66;
+            font-weight: 600;
+        }
+        .event-badge {
+            background: #2A9D8F;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .event-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            background: #2A9D8F;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+        /* Teilnehmer Liste */
+        .participant-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        .participant-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .participant-item:last-child {
+            border-bottom: none;
+        }
+        .participant-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .participant-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .participant-email {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        .participant-phone {
+            font-size: 0.75rem;
+            color: #2A9D8F;
+            margin-top: 2px;
+        }
+        .participant-phone i {
+            margin-right: 3px;
+            font-size: 0.7rem;
+        }
+        /* User Table */
+        .user-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            overflow-x: auto;
+        }
+        .user-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 500px;
+        }
+        .user-table th {
+            background: #0D3B66;
+            color: white;
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+        .user-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 0.85rem;
+        }
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            color: #0D3B66;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .tab-btn {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            .event-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .modal-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="/">Start</a></li>
+                    <li><a href="/admin" class="active">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="admin-container">
+        <div class="container">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <h2>
+                    <i class="fas fa-cog"></i>
+                    Admin Dashboard
+                </h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <span class="welcome-message" id="welcomeMessage"></span>
+                    <button class="btn btn-danger btn-small" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Abmelden
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showTab('events')">
+                    <i class="fas fa-calendar"></i> Events
+                </button>
+                <button class="tab-btn" onclick="showTab('users')">
+                    <i class="fas fa-users"></i> Angler
+                </button>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="tab-events" class="tab-content active">
+                <button class="btn" id="showFormBtn" style="width: 100%; margin-bottom: 20px;">
+                    <i class="fas fa-plus"></i> Neues Event
+                </button>
+
+                <!-- Event Form (aktualisiert mit spots) -->
+                <div class="event-form" id="eventForm" style="display: none; background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                    <h3 id="formTitle">Neues Event</h3>
+                    <form id="eventFormElement">
+                        <input type="hidden" id="eventId">
+
+                        <div style="display: grid; gap: 15px;">
+                            <div>
+                                <label>Titel *</label>
+                                <input type="text" id="title" required style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                            </div>
+
+                            <div>
+                                <label>Datum *</label>
+                                <input type="date" id="date" required style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                            </div>
+
+                            <div>
+                                <label>Ort *</label>
+                                <input type="text" id="location" required style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                            </div>
+
+                            <div>
+                                <label>Preis (€) *</label>
+                                <input type="number" id="price" step="0.01" required style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                            </div>
+
+                            <!-- Anzahl Plätze (spots) -->
+                            <div>
+                                <label>Anzahl Plätze (1 Platz = 2 Angler) *</label>
+                                <input type="number" id="spots" min="1" value="10" required style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                <small>Maximale Angler: <span id="maxParticipantsCalc">20</span></small>
+                            </div>
+
+                            <!-- Feld für maxParticipants (automatisch, readonly) -->
+                            <div>
+                                <label>Maximale Teilnehmer (automatisch)</label>
+                                <input type="number" id="maxParticipants" readonly style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: #f0f0f0;">
+                            </div>
+
+                            <div>
+                                <label>Icon</label>
+                                <select id="image" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                                    <option value="fas fa-water">See / Wasser</option>
+                                    <option value="fas fa-fish">Fisch</option>
+                                    <option value="fas fa-ship">Schiff</option>
+                                    <option value="fas fa-anchor">Anker</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label>Beschreibung *</label>
+                                <textarea id="description" required rows="3" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px;"></textarea>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                                <button type="button" class="btn btn-small" onclick="hideEventForm()">Abbrechen</button>
+                                <button type="submit" class="btn btn-small btn-success">Speichern</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Events List -->
+                <div id="eventsList"></div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="tab-users" class="tab-content">
+                <div class="user-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Rolle</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr><td colspan="4" style="text-align: center;">Lade...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teilnehmer Modal -->
+    <div id="participantModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalEventTitle">Teilnehmer verwalten</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+                <h4>Aktuelle Teilnehmer</h4>
+                <div id="currentParticipants" class="participant-list"></div>
+            </div>
+
+            <div>
+                <h4>Verfügbare Angler hinzufügen</h4>
+                <div id="availableUsers" class="participant-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> |
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/menu.js"></script>
+    <script>
+        let currentEventId = null;
+
+        // Tab wechseln
+        function showTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            if (tab === 'events') {
+                document.querySelector('.tab-btn').classList.add('active');
+                document.getElementById('tab-events').classList.add('active');
+                loadEvents();
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-users').classList.add('active');
+                loadUsers();
+            }
+        }
+
+        // Live-Berechnung: Plätze → max. Teilnehmer
+        document.addEventListener('DOMContentLoaded', function() {
+            const spotsInput = document.getElementById('spots');
+            if (spotsInput) {
+                spotsInput.addEventListener('input', function() {
+                    const spots = parseInt(this.value) || 0;
+                    const max = spots * 2;
+                    document.getElementById('maxParticipantsCalc').textContent = max;
+                    document.getElementById('maxParticipants').value = max;
+                });
+                spotsInput.dispatchEvent(new Event('input'));
+            }
+        });
+
+        // Event Formular anzeigen/verstecken
+        document.getElementById('showFormBtn').addEventListener('click', () => {
+            document.getElementById('eventForm').style.display = 'block';
+            document.getElementById('eventFormElement').reset();
+            document.getElementById('eventId').value = '';
+            document.getElementById('formTitle').textContent = 'Neues Event';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            const spotsInput = document.getElementById('spots');
+            if (spotsInput) {
+                spotsInput.value = 10;
+                spotsInput.dispatchEvent(new Event('input'));
+            }
+        });
+
+        function hideEventForm() {
+            document.getElementById('eventForm').style.display = 'none';
+        }
+
+        // Events laden
+        async function loadEvents() {
+            try {
+                const response = await fetch('/api/events');
+                const events = await response.json();
+                const container = document.getElementById('eventsList');
+                container.innerHTML = '';
+
+                events.forEach(event => {
+                    const participants = event.participants?.length || 0;
+                    const max = event.maxParticipants || 20;
+                    const percent = (participants / max) * 100;
+
+                    const card = document.createElement('div');
+                    card.className = 'event-card';
+                    card.innerHTML = `
+                        <div class="event-header">
+                            <span class="event-title">${event.title}</span>
+                            <span class="event-badge">${participants}/${max} Plätze</span>
+                        </div>
+                        <div class="event-info">
+                            <div><i class="far fa-calendar"></i> ${new Date(event.date).toLocaleDateString('de-DE')}</div>
+                            <div><i class="fas fa-map-marker"></i> ${event.location}</div>
+                            <div><i class="fas fa-euro-sign"></i> ${event.price}€</div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%"></div>
+                        </div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+                            <button class="btn btn-small" onclick="editEvent(${event.id})">
+                                <i class="fas fa-edit"></i> Bearbeiten
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="manageParticipants(${event.id}, '${event.title}')">
+                                <i class="fas fa-users"></i> Teilnehmer
+                            </button>
+                            <button class="btn btn-small btn-success" onclick="window.location.href='/event-lake.html?id=${event.id}'">
+                                <i class="fas fa-water"></i> See-Ansicht
+                            </button>
+                            <button class="btn btn-small btn-danger" onclick="deleteEvent(${event.id})">
+                                <i class="fas fa-trash"></i> Löschen
+                            </button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Fehler beim Laden der Events:', error);
+            }
+        }
+
+        // Event bearbeiten
+        async function editEvent(id) {
+            try {
+                const response = await fetch(`/api/events/${id}`);
+                const event = await response.json();
+
+                document.getElementById('eventId').value = event.id;
+                document.getElementById('title').value = event.title;
+                document.getElementById('date').value = event.date;
+                document.getElementById('location').value = event.location;
+                document.getElementById('description').value = event.description;
+                document.getElementById('price').value = event.price;
+
+                const spotsInput = document.getElementById('spots');
+                if (spotsInput) {
+                    spotsInput.value = event.spots || 10;
+                    spotsInput.dispatchEvent(new Event('input'));
+                }
+                document.getElementById('image').value = event.image || 'fas fa-fish';
+
+                document.getElementById('formTitle').textContent = 'Event bearbeiten';
+                document.getElementById('eventForm').style.display = 'block';
+            } catch (error) {
+                alert('Fehler beim Laden des Events');
+            }
+        }
+
+        // Event löschen
+        async function deleteEvent(id) {
+            if (!confirm('Event wirklich löschen?')) return;
+            try {
+                const response = await fetch(`/api/events/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) loadEvents();
+                else alert('Fehler beim Löschen');
+            } catch (error) {
+                alert('Fehler beim Löschen');
+            }
+        }
+
+        // Teilnehmer verwalten
+        async function manageParticipants(eventId, eventTitle) {
+            currentEventId = eventId;
+            document.getElementById('modalEventTitle').textContent = `Teilnehmer - ${eventTitle}`;
+            await loadParticipants(eventId);
+            await loadAvailableUsers(eventId);
+            document.getElementById('participantModal').classList.add('show');
+        }
+
+        // Teilnehmer laden
+        async function loadParticipants(eventId) {
+            try {
+                const response = await fetch(`/api/events/${eventId}/participants`);
+                const participants = await response.json();
+                const container = document.getElementById('currentParticipants');
+                if (participants.length === 0) {
+                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">👥 Noch keine Angler angemeldet</div>';
+                    return;
+                }
+                container.innerHTML = participants.map(p => `
+                    <div class="participant-item">
+                        <div class="participant-info">
+                            <span class="participant-name">${p.name}</span>
+                            <span class="participant-email">${p.email}</span>
+                            ${p.phone ? `<span class="participant-phone"><i class="fas fa-phone"></i> ${p.phone}</span>` : ''}
+                        </div>
+                        <button class="btn btn-small btn-danger" onclick="removeParticipant(${p.id})">
+                            <i class="fas fa-times"></i> Entfernen
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Fehler:', error);
+            }
+        }
+
+        // Verfügbare User laden
+        async function loadAvailableUsers(eventId) {
+            try {
+                const response = await fetch(`/api/events/${eventId}/available-users`);
+                const users = await response.json();
+                const container = document.getElementById('availableUsers');
+                if (users.length === 0) {
+                    container.innerHTML = '<div style="padding: 20px; text-align: center; color: #666;">✅ Alle Angler sind bereits angemeldet</div>';
+                    return;
+                }
+                container.innerHTML = users.map(u => `
+                    <div class="participant-item">
+                        <div class="participant-info">
+                            <span class="participant-name">${u.name}</span>
+                            <span class="participant-email">${u.email}</span>
+                            ${u.phone ? `<span class="participant-phone"><i class="fas fa-phone"></i> ${u.phone}</span>` : ''}
+                        </div>
+                        <button class="btn btn-small btn-success" onclick="addParticipant(${u.id})">
+                            <i class="fas fa-plus"></i> Hinzufügen
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Fehler:', error);
+            }
+        }
+
+        // Teilnehmer hinzufügen
+        async function addParticipant(userId) {
+            if (!currentEventId) { alert('Fehler: Kein Event ausgewählt'); return; }
+            try {
+                const response = await fetch(`/api/events/${currentEventId}/participants`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: parseInt(userId) })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    await loadParticipants(currentEventId);
+                    await loadAvailableUsers(currentEventId);
+                    loadEvents();
+                } else {
+                    alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                alert('Fehler beim Hinzufügen: ' + error.message);
+            }
+        }
+
+        // Teilnehmer entfernen
+        async function removeParticipant(userId) {
+            if (!confirm('Teilnehmer wirklich entfernen?')) return;
+            try {
+                const response = await fetch(`/api/events/${currentEventId}/participants/${userId}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                if (data.success) {
+                    await loadParticipants(currentEventId);
+                    await loadAvailableUsers(currentEventId);
+                    loadEvents();
+                } else {
+                    alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
+                }
+            } catch (error) {
+                alert('Fehler beim Entfernen: ' + error.message);
+            }
+        }
+
+        // User laden
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const users = await response.json();
+                const tbody = document.getElementById('usersTableBody');
+                if (users.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Keine Benutzer</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = users.map(user => `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email}</td>
+                        <td>${user.role === 'admin' ? 'Admin' : 'Angler'}</td>
+                        <td>
+                            ${user.role !== 'admin' ? `
+                                <button class="btn btn-small btn-danger" onclick="deleteUser(${user.id})">
+                                    <i class="fas fa-trash"></i> Löschen
+                                </button>
+                            ` : '-'}
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Fehler beim Laden der User:', error);
+            }
+        }
+
+        // User löschen
+        async function deleteUser(id) {
+            if (!confirm('Benutzer wirklich löschen?')) return;
+            try {
+                const response = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
+                const data = await response.json();
+                if (data.success) loadUsers();
+                else alert(data.error || 'Fehler beim Löschen');
+            } catch (error) {
+                alert('Fehler beim Löschen');
+            }
+        }
+
+        // Event Form absenden
+        document.getElementById('eventFormElement').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const eventId = document.getElementById('eventId').value;
+            const spots = parseInt(document.getElementById('spots').value);
+            const eventData = {
+                title: document.getElementById('title').value,
+                date: document.getElementById('date').value,
+                location: document.getElementById('location').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('price').value),
+                spots: spots,
+                maxParticipants: spots * 2,
+                image: document.getElementById('image').value
+            };
+            const url = eventId ? `/api/events/${eventId}` : '/api/events';
+            const method = eventId ? 'PUT' : 'POST';
+            try {
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(eventData)
+                });
+                const data = await response.json();
+                if (data.success || data.event) {
+                    hideEventForm();
+                    loadEvents();
+                } else {
+                    alert('Fehler beim Speichern');
+                }
+            } catch (error) {
+                alert('Fehler beim Speichern');
+            }
+        });
+
+        // Modal schließen
+        function closeModal() {
+            document.getElementById('participantModal').classList.remove('show');
+        }
+
+        // Abmelden
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/';
+        });
+
+        // Auth check
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/me');
+                const data = await response.json();
+                if (data.user && data.user.role === 'admin') {
+                    document.getElementById('welcomeMessage').innerHTML = `<i class="fas fa-user"></i> ${data.user.name}`;
+                    loadEvents();
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                window.location.href = '/login.html';
+            }
+        }
+
+        checkAuth();
+
+        // Klick außerhalb schließt Modal
+        window.onclick = function(event) {
+            const modal = document.getElementById('participantModal');
+            if (event.target === modal) closeModal();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Statistik - Angel-Event-Planer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+        /* Header und Navigation */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+            color: #f4d03f;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+        .stats-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .stats-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .stats-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .stats-table th {
+            background: #0D3B66;
+            color: white;
+            padding: 12px;
+        }
+        .stats-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .rank-1 { background: gold; font-weight: bold; }
+        .rank-2 { background: silver; }
+        .rank-3 { background: #cd7f32; }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #2A9D8F;
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+        }
+        .footer {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 20px;
+        }
+        .footer a {
+            color: #f4d03f;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="/">Start</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="#" class="active">Statistik</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="stats-container" id="statsContainer">
+        <h2>Statistik wird geladen...</h2>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> |
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/menu.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        if (!eventId) window.location.href = '/admin';
+
+        async function loadStats() {
+            try {
+                const response = await fetch(`/api/events/${eventId}/stats`);
+                const stats = await response.json();
+                let html = '<h2>Statistik</h2><div class="stats-table"><table><tr><th>Platz</th><th>Name</th><th>Gesamt</th></tr>';
+                stats.forEach((s, idx) => {
+                    const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+                    html += `<tr class="${rankClass}"><td>${idx+1}</td><td>${s.name}</td><td>${s.total}</td></tr>`;
+                });
+                html += '</table></div><a href="/event-lake.html?id=' + eventId + '" class="back-btn"><i class="fas fa-arrow-left"></i> Zurück zum See</a>';
+                document.getElementById('statsContainer').innerHTML = html;
+            } catch (error) {
+                document.getElementById('statsContainer').innerHTML = '<h2>Fehler beim Laden</h2>';
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

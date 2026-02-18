@@ -1,0 +1,167 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin",
+      "email": "admin@angel-event.de",
+      "password": "$2a$10$dummyhash",
+      "role": "admin",
+      "createdAt": "2026-02-18T12:16:40.803Z"
+    },
+    {
+      "id": 2,
+      "name": "Arthur",
+      "email": "fabrizius.arthur@gmail.com",
+      "password": "$2b$10$WoC.jYXskt5WHg4sKy1IiezHtMEhyiEE3Lk.gcFlWkBBswc.ZuFWO",
+      "role": "admin",
+      "createdAt": "2026-02-18T12:17:47.442Z"
+    },
+    {
+      "id": 3,
+      "name": "Emilian Fabrizius ",
+      "email": "artjom.t@gmx.de",
+      "password": "$2b$10$iH7JeiFQqo.XGmLyRe9Hve7r7Ok1U38yZfwGJN1O4sIZxx.cZWVa2",
+      "role": "user",
+      "createdAt": "2026-02-18T13:07:19.456Z"
+    },
+    {
+      "id": 4,
+      "name": "Aurika Banari",
+      "email": "aurika@gmx.de",
+      "password": "$2b$10$.sfHZar/yNMwmhgQhSiKq.ANI6KGgucnmWzmbDhbUZBXtACit2ryC",
+      "role": "user",
+      "phone": "",
+      "createdAt": "2026-02-18T18:15:20.547Z"
+    }
+  ],
+  "events": [
+    {
+      "id": 1,
+      "title": "Hecht-Cup 2026",
+      "date": "2026-05-15",
+      "location": "Müggelsee, Berlin",
+      "description": "Traditionsreicher Hecht-Wettkampf mit tollen Preisen.",
+      "price": 25,
+      "image": "fas fa-water",
+      "maxParticipants": 20,
+      "participants": [
+        {
+          "userId": 4,
+          "paymentMethod": "paypal",
+          "paid": false
+        }
+      ],
+      "currentParticipants": 1,
+      "createdAt": "2026-02-18T12:16:40.804Z",
+      "createdBy": 1,
+      "updatedAt": "2026-02-18T16:04:05.058Z"
+    },
+    {
+      "id": 2,
+      "title": "Karpfen-Meisterschaft",
+      "date": "2026-06-22",
+      "location": "Chiemsee, Bayern",
+      "description": "Das größte Karpfentreffen im Süden.",
+      "price": 30,
+      "image": "fas fa-fish",
+      "maxParticipants": 30,
+      "participants": [
+        3
+      ],
+      "currentParticipants": 1,
+      "createdAt": "2026-02-18T12:16:40.804Z",
+      "createdBy": 1
+    },
+    {
+      "id": 3,
+      "title": "Seeangeln auf Zander",
+      "date": "2026-07-10",
+      "location": "Bodensee",
+      "description": "Vom Boot aus auf Zander – für erfahrene Angler.",
+      "price": 40,
+      "image": "fas fa-ship",
+      "maxParticipants": 15,
+      "participants": [
+        {
+          "userId": 4,
+          "paymentMethod": "paypal",
+          "paid": false
+        }
+      ],
+      "currentParticipants": 1,
+      "createdAt": "2026-02-18T12:16:40.804Z",
+      "createdBy": 1
+    },
+    {
+      "id": 4,
+      "title": "Forellen Angeln",
+      "date": "2026-02-19",
+      "location": "Hamburg",
+      "description": "Las uns Angeln gehen!!!",
+      "price": 60,
+      "spots": 2,
+      "maxParticipants": 4,
+      "image": "fas fa-fish",
+      "currentParticipants": 4,
+      "participants": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "participantOrder": [
+        1,
+        3,
+        4,
+        2
+      ],
+      "participantSpots": {
+        "1": {
+          "spot": 1,
+          "side": "left"
+        },
+        "2": {
+          "spot": 2,
+          "side": "right"
+        },
+        "3": {
+          "spot": 1,
+          "side": "right"
+        },
+        "4": {
+          "spot": 2,
+          "side": "left"
+        }
+      },
+      "catches": {
+        "1": {
+          "round1": 1
+        },
+        "2": {
+          "round1": 5
+        },
+        "3": {
+          "round1": 1
+        },
+        "4": {
+          "round1": 2
+        }
+      },
+      "rounds": [
+        {
+          "round": 1,
+          "started": "2026-02-18T20:40:52.995Z",
+          "finished": "2026-02-18T20:41:13.795Z"
+        },
+        {
+          "round": 2,
+          "started": "2026-02-18T20:41:13.795Z",
+          "finished": null
+        }
+      ],
+      "currentRound": 2,
+      "createdAt": "2026-02-18T20:39:58.921Z",
+      "createdBy": 2
+    }
+  ]
+}

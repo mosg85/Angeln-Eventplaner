@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Impressum - Angel-Event-Planer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header und Navigation (identisch zu anderen Seiten) */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+            color: #f4d03f;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+
+        /* Content-Bereich für Impressum */
+        .content-container {
+            flex: 1;
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .legal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .legal-content h1 {
+            color: #0D3B66;
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legal-content h2 {
+            color: #2A9D8F;
+            margin: 30px 0 15px;
+            font-size: 1.6rem;
+        }
+        .legal-content p {
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: #333;
+        }
+        .legal-content ul {
+            margin-bottom: 20px;
+            padding-left: 25px;
+        }
+        .legal-content li {
+            margin-bottom: 5px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #2A9D8F;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .back-link i {
+            margin-right: 5px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .footer {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto;
+        }
+        .footer a {
+            color: #f4d03f;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .legal-content h1 { font-size: 1.8rem; }
+            .legal-content h2 { font-size: 1.4rem; }
+            .legal-content p, .legal-content li { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="/">Start</a></li>
+                    <li><a href="/login.html">Anmelden</a></li>
+                    <li><a href="/register.html">Registrieren</a></li>
+                    <li><a href="/impressum.html" class="active">Impressum</a></li>
+                    <li><a href="/datenschutz.html">Datenschutz</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="content-container">
+        <div class="legal-content">
+            <h1><i class="fas fa-gavel"></i> Impressum</h1>
+
+            <h2>Angaben gemäß § 5 TMG</h2>
+            <p>
+                Angel-Event-Planer GmbH<br>
+                Musterstraße 123<br>
+                12345 Berlin<br>
+                Deutschland
+            </p>
+
+            <h2>Vertreten durch</h2>
+            <p>Geschäftsführer: Max Mustermann</p>
+
+            <h2>Kontakt</h2>
+            <p>
+                Telefon: +49 (0) 123 456789<br>
+                E-Mail: <a href="mailto:info@angel-event-planer.de">info@angel-event-planer.de</a><br>
+                Web: www.angel-event-planer.de
+            </p>
+
+            <h2>Registereintrag</h2>
+            <p>
+                Eintragung im Handelsregister<br>
+                Registergericht: Amtsgericht Berlin<br>
+                Registernummer: HRB 123456
+            </p>
+
+            <h2>Umsatzsteuer-ID</h2>
+            <p>
+                Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:<br>
+                DE 123456789
+            </p>
+
+            <h2>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h2>
+            <p>
+                Max Mustermann<br>
+                Musterstraße 123<br>
+                12345 Berlin
+            </p>
+
+            <h2>Streitschlichtung</h2>
+            <p>
+                Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+                <a href="https://ec.europa.eu/consumers/odr/" target="_blank">https://ec.europa.eu/consumers/odr/</a>.<br>
+                Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+            </p>
+
+            <h2>Haftung für Inhalte</h2>
+            <p>
+                Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind wir jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen bleiben hiervon unberührt. Eine diesbezügliche Haftung ist erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.
+            </p>
+
+            <h2>Haftung für Links</h2>
+            <p>
+                Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+            </p>
+
+            <h2>Urheberrecht</h2>
+            <p>
+                Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet.
+            </p>
+
+            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Zurück zur Startseite</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> | 
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Externes Menü-Skript (Burger-Funktionalität) -->
+    <script src="/js/menu.js"></script>
+</body>
+</html>

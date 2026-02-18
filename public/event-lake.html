@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Event am See - Angel-Event-Planer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 10px;
+        }
+        /* Header und Navigation */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+            color: #f4d03f;
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+        /* Spezielle Styles für die See-Ansicht */
+        .lake-container {
+            padding: 20px 10px;
+            background: #e8f4fd;
+            min-height: calc(100vh - 140px);
+        }
+        .lake-header {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .round-info {
+            background: #0D3B66;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        .spot-card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #2A9D8F;
+        }
+        .spot-number {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #0D3B66;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .anglers-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .angler-spot {
+            flex: 1;
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 10px;
+            text-align: center;
+        }
+        .angler-avatar {
+            width: 60px;
+            height: 60px;
+            background: #2A9D8F;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 2rem;
+        }
+        .angler-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .catch-input {
+            width: 80px;
+            padding: 5px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            text-align: center;
+            margin: 8px auto 0;
+        }
+        .empty-spot {
+            background: #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        .action-bar {
+            position: sticky;
+            bottom: 10px;
+            background: white;
+            border-radius: 50px;
+            padding: 12px 20px;
+            box-shadow: 0 -2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .action-btn.primary {
+            background: #2A9D8F;
+            color: white;
+        }
+        .action-btn.secondary {
+            background: #0D3B66;
+            color: white;
+        }
+        .action-btn.danger {
+            background: #dc3545;
+            color: white;
+        }
+        .footer {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 20px;
+        }
+        .footer a {
+            color: #f4d03f;
+            text-decoration: none;
+        }
+        @media (max-width: 480px) {
+            .spots-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="/">Start</a></li>
+                    <li><a href="/admin">Admin</a></li>
+                    <li><a href="#" class="active">See-Ansicht</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="lake-container" id="lakeContainer">
+        <!-- wird dynamisch geladen -->
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> |
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="/js/menu.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('id');
+        if (!eventId) window.location.href = '/admin';
+
+        let currentEvent = null;
+
+        async function loadEvent() {
+            try {
+                const res = await fetch(`/api/events/${eventId}`);
+                const event = await res.json();
+                currentEvent = event;
+                renderLake();
+            } catch (error) {
+                console.error('Fehler:', error);
+            }
+        }
+
+        function renderLake() {
+            if (!currentEvent) return;
+            const container = document.getElementById('lakeContainer');
+            const spotsCount = currentEvent.spots || 10;
+            const participantSpots = currentEvent.participantSpots || {};
+            const catches = currentEvent.catches || {};
+            const participantsData = currentEvent.participantsData || [];
+            const currentRound = currentEvent.currentRound || 0;
+
+            let html = `
+                <div class="lake-header">
+                    <h2>${currentEvent.title}</h2>
+                    <div class="round-info">Runde ${currentRound > 0 ? currentRound : 'Noch nicht gestartet'}</div>
+                </div>
+                <div class="spots-grid">
+            `;
+
+            for (let i = 1; i <= spotsCount; i++) {
+                const leftEntry = Object.entries(participantSpots).find(([uid, pos]) => pos.spot === i && pos.side === 'left');
+                const rightEntry = Object.entries(participantSpots).find(([uid, pos]) => pos.spot === i && pos.side === 'right');
+
+                const leftUserId = leftEntry ? parseInt(leftEntry[0]) : null;
+                const rightUserId = rightEntry ? parseInt(rightEntry[0]) : null;
+
+                const leftUser = participantsData.find(u => u.id === leftUserId);
+                const rightUser = participantsData.find(u => u.id === rightUserId);
+
+                html += `<div class="spot-card"><div class="spot-number"><i class="fas fa-map-pin"></i> Platz ${i}</div><div class="anglers-row">`;
+
+                // Linker Angler
+                if (leftUser) {
+                    const catchAmount = catches[leftUserId] ? catches[leftUserId][`round${currentRound}`] || 0 : 0;
+                    html += `
+                        <div class="angler-spot">
+                            <div class="angler-avatar"><i class="fas fa-user"></i></div>
+                            <div class="angler-name">${leftUser.name}</div>
+                            <input type="number" class="catch-input" data-user="${leftUserId}" data-round="${currentRound}" value="${catchAmount}" placeholder="Fische" min="0">
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="angler-spot empty-spot"><i class="fas fa-user-slash"></i> Frei</div>`;
+                }
+
+                // Rechter Angler
+                if (rightUser) {
+                    const catchAmount = catches[rightUserId] ? catches[rightUserId][`round${currentRound}`] || 0 : 0;
+                    html += `
+                        <div class="angler-spot">
+                            <div class="angler-avatar"><i class="fas fa-user"></i></div>
+                            <div class="angler-name">${rightUser.name}</div>
+                            <input type="number" class="catch-input" data-user="${rightUserId}" data-round="${currentRound}" value="${catchAmount}" placeholder="Fische" min="0">
+                        </div>
+                    `;
+                } else {
+                    html += `<div class="angler-spot empty-spot"><i class="fas fa-user-slash"></i> Frei</div>`;
+                }
+
+                html += `</div></div>`;
+            }
+
+            html += `</div>`;
+
+            // Action-Leiste
+            html += `<div class="action-bar">`;
+            if (currentRound === 0) {
+                html += `<button class="action-btn primary" id="startEventBtn"><i class="fas fa-play"></i> Event starten</button>`;
+            } else if (currentRound > 0 && currentRound !== -1) {
+                html += `
+                    <button class="action-btn primary" id="nextRoundBtn"><i class="fas fa-forward"></i> Nächste Runde</button>
+                    <button class="action-btn secondary" id="statsBtn"><i class="fas fa-chart-bar"></i> Statistik</button>
+                    <button class="action-btn danger" id="finishEventBtn"><i class="fas fa-stop"></i> Event beenden</button>
+                `;
+            } else if (currentRound === -1) {
+                html += `<button class="action-btn secondary" id="statsBtn"><i class="fas fa-chart-bar"></i> Statistik anzeigen</button>`;
+            }
+            html += `</div>`;
+
+            container.innerHTML = html;
+
+            // Event-Listener für Buttons
+            if (document.getElementById('startEventBtn')) {
+                document.getElementById('startEventBtn').addEventListener('click', startEvent);
+            }
+            if (document.getElementById('nextRoundBtn')) {
+                document.getElementById('nextRoundBtn').addEventListener('click', nextRound);
+            }
+            if (document.getElementById('statsBtn')) {
+                document.getElementById('statsBtn').addEventListener('click', showStats);
+            }
+            if (document.getElementById('finishEventBtn')) {
+                document.getElementById('finishEventBtn').addEventListener('click', finishEvent);
+            }
+
+            document.querySelectorAll('.catch-input').forEach(input => {
+                input.addEventListener('change', async function() {
+                    const userId = this.dataset.user;
+                    const round = this.dataset.round;
+                    const amount = parseInt(this.value) || 0;
+                    await saveCatch(userId, round, amount);
+                });
+            });
+        }
+
+        async function startEvent() {
+            const res = await fetch(`/api/events/${eventId}/start`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) loadEvent();
+            else alert('Fehler: ' + data.error);
+        }
+
+        async function saveCatch(userId, round, amount) {
+            await fetch(`/api/events/${eventId}/catch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, round, amount })
+            });
+        }
+
+        async function nextRound() {
+            const res = await fetch(`/api/events/${eventId}/nextround`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) loadEvent();
+            else alert('Fehler: ' + data.error);
+        }
+
+        async function finishEvent() {
+            if (!confirm('Event wirklich beenden?')) return;
+            const res = await fetch(`/api/events/${eventId}/finish`, { method: 'POST' });
+            const data = await res.json();
+            if (data.success) loadEvent();
+            else alert('Fehler: ' + data.error);
+        }
+
+        function showStats() {
+            window.location.href = `/event-stats.html?id=${eventId}`;
+        }
+
+        loadEvent();
+    </script>
+</body>
+</html>

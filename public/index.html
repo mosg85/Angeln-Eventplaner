@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Angel-Event-Planer | Deutschland</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation */
+        .header {
+            background: linear-gradient(135deg, #0D3B66, #1e5a7a);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            font-size: 2rem;
+            color: #f4d03f;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+        .nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+            border-radius: 30px;
+            transition: background 0.3s;
+            white-space: nowrap;
+        }
+        .nav a:hover,
+        .nav a.active {
+            background: rgba(255,255,255,0.2);
+        }
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+            .nav ul {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: #0D3B66;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                gap: 10px;
+                z-index: 999;
+            }
+            .nav ul.show {
+                display: flex;
+            }
+            .nav ul li {
+                width: 100%;
+                text-align: center;
+            }
+            .nav a {
+                display: block;
+                padding: 12px;
+                font-size: 1.2rem;
+                white-space: normal;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1508873696983-2dfd5898f08b') center/cover no-repeat;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+        }
+        .hero p {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+        /* VERBESSERTER BUTTON */
+        .hero .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2A9D8F, #0D3B66);
+            color: white;
+            padding: 18px 45px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 60px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .hero .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            background: linear-gradient(135deg, #0D3B66, #2A9D8F);
+            border-color: #f4d03f;
+        }
+
+        /* Events Section */
+        .events {
+            padding: 80px 0;
+            background: white;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #0D3B66;
+            margin-bottom: 50px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #2A9D8F;
+            border-radius: 2px;
+        }
+        .event-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .event-card {
+            background: #f9f9f9;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+        }
+        .event-image {
+            background: linear-gradient(145deg, #2A9D8F, #0D3B66);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 4rem;
+        }
+        .event-details {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .event-details h3 {
+            font-size: 1.8rem;
+            color: #0D3B66;
+            margin-bottom: 10px;
+        }
+        .event-date, .event-location {
+            color: #555;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .event-description {
+            margin: 15px 0;
+            color: #333;
+            flex-grow: 1;
+        }
+        .event-price {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: #2A9D8F;
+            margin: 10px 0;
+        }
+        .btn-pay {
+            padding: 10px 25px;
+            font-size: 1rem;
+            background: #0D3B66;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            margin-top: 15px;
+            width: fit-content;
+            border: none;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-pay:hover {
+            background: #2A9D8F;
+            transform: translateY(-2px);
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* About */
+        .about {
+            background: #f0f5fa;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .about p {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+
+        /* Footer */
+        .footer {
+            background: #0D3B66;
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+        .footer a {
+            color: #f4d03f;
+            text-decoration: none;
+        }
+
+        /* Cookie-Banner */
+        #cookieBanner {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #0D3B66;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            z-index: 2000;
+            font-size: 14px;
+        }
+        #cookieBanner button {
+            background: #2A9D8F;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+        #cookieBanner button:last-child {
+            background: transparent;
+            border: 1px solid white;
+        }
+
+        /* Modal */
+        #paymentModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+            padding: 15px;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-header h3 {
+            color: #0D3B66;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #666;
+        }
+        .payment-option {
+            background: #f5f5f5;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .payment-option:hover {
+            background: #e0e0e0;
+        }
+        .payment-option.selected {
+            border-color: #2A9D8F;
+            background: #e8f5f2;
+        }
+        .payment-option i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: #0D3B66;
+        }
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-footer button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-confirm {
+            background: #2A9D8F;
+            color: white;
+        }
+        .btn-cancel {
+            background: #e0e0e0;
+        }
+
+        /* Mobile Optimierungen */
+        @media (max-width: 768px) {
+            .hero h2 { font-size: 2.2rem; }
+            .hero p { font-size: 1.1rem; }
+            .hero .btn {
+                padding: 14px 30px;
+                font-size: 1.2rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .event-list { grid-template-columns: 1fr; }
+            .hero { min-height: 60vh; }
+            .logo h1 { font-size: 1.3rem; }
+            .logo i { font-size: 1.8rem; }
+            .hero .btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-fish"></i>
+                <h1>Angel-Event-Planer</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav class="nav">
+                <ul id="menu">
+                    <li><a href="#home">Start</a></li>
+                    <li><a href="#events">Events</a></li>
+                    <li><a href="#about">Über uns</a></li>
+                    <li><a href="/login.html" id="loginLink">Anmelden</a></li>
+                    <li><a href="/register.html" id="registerLink">Registrieren</a></li>
+                    <li><a href="/user-events.html" id="userEventsLink" style="display: none;">Meine Events</a></li>
+                    <li><a href="/admin" id="adminLink" style="display: none;">Admin</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h2>Die besten Angelwettbewerbe in Deutschland</h2>
+            <p>Organisiere und nimm teil an spannenden Angelturnieren – einfach, schnell und sicher.</p>
+            <a href="#events" class="btn">Events entdecken</a>
+        </div>
+    </section>
+
+    <section id="events" class="events">
+        <div class="container">
+            <h2 class="section-title">Kommende Events</h2>
+            <div class="event-list" id="eventList">
+                <div class="loading">Lade Events...</div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">Über Angel-Event-Planer</h2>
+            <p>Wir verbinden Angler aus ganz Deutschland und helfen bei der Organisation von fairen und spannenden Wettbewerben. Unsere Plattform bietet einfache Anmeldung, sichere Bezahlung via PayPal und eine starke Community.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Angel-Event-Planer. Alle Rechte vorbehalten.</p>
+            <p>
+                <a href="/impressum.html">Impressum</a> | 
+                <a href="/datenschutz.html">Datenschutz</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Cookie-Banner -->
+    <div id="cookieBanner">
+        <p style="margin-bottom: 10px;">🍪 Diese Website verwendet Cookies. Mit der Nutzung stimmst du zu. <a href="/datenschutz.html" style="color: #f4d03f;">Mehr</a></p>
+        <button id="acceptCookies">Akzeptieren</button>
+        <button id="declineCookies">✕</button>
+    </div>
+
+    <!-- Zahlungs-Modal -->
+    <div id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalEventTitle">Zahlungsmethode wählen</h3>
+                <button class="close-btn" onclick="closePaymentModal()">&times;</button>
+            </div>
+            <div id="paymentOptions">
+                <div class="payment-option" data-method="paypal" onclick="selectPaymentMethod('paypal')">
+                    <i class="fab fa-paypal"></i> <strong>PayPal</strong><br><small>Sicher und schnell bezahlen</small>
+                </div>
+                <div class="payment-option" data-method="cash" onclick="selectPaymentMethod('cash')">
+                    <i class="fas fa-money-bill-wave"></i> <strong>Vor Ort bezahlen</strong><br><small>Barzahlung am Veranstaltungstag</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closePaymentModal()">Abbrechen</button>
+                <button class="btn-confirm" id="confirmPaymentBtn" onclick="confirmRegistration()" disabled>Bestätigen</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === MENÜ-TOGGLE ===
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggle = document.getElementById('menuToggle');
+            const menu = document.getElementById('menu');
+            if (toggle && menu) {
+                toggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    menu.classList.toggle('show');
+                });
+                menu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.remove('show');
+                    });
+                });
+                document.addEventListener('click', function(e) {
+                    if (!menu.contains(e.target) && !toggle.contains(e.target)) {
+                        menu.classList.remove('show');
+                    }
+                });
+            }
+
+            // Cookie-Banner
+            const cookieBanner = document.getElementById('cookieBanner');
+            if (!localStorage.getItem('cookieConsent')) {
+                cookieBanner.style.display = 'block';
+            }
+            document.getElementById('acceptCookies').addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'accepted');
+                cookieBanner.style.display = 'none';
+            });
+            document.getElementById('declineCookies').addEventListener('click', () => {
+                localStorage.setItem('cookieConsent', 'declined');
+                cookieBanner.style.display = 'none';
+            });
+
+            // Benutzerstatus prüfen und Events laden
+            checkUserAndLoad();
+        });
+
+        // === LOGIN-STATUS ===
+        let currentUser = null;
+        let selectedEventId = null;
+        let selectedPaymentMethod = null;
+
+        async function checkUserAndLoad() {
+            try {
+                const res = await fetch('/api/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    currentUser = data.user;
+                    document.getElementById('loginLink').style.display = 'none';
+                    document.getElementById('registerLink').style.display = 'none';
+                    document.getElementById('userEventsLink').style.display = 'inline-block';
+                    if (currentUser.role === 'admin') {
+                        document.getElementById('adminLink').style.display = 'inline-block';
+                    }
+                } else {
+                    currentUser = null;
+                    document.getElementById('loginLink').style.display = 'inline-block';
+                    document.getElementById('registerLink').style.display = 'inline-block';
+                    document.getElementById('userEventsLink').style.display = 'none';
+                    document.getElementById('adminLink').style.display = 'none';
+                }
+            } catch (e) {
+                currentUser = null;
+            }
+            loadEvents();
+        }
+
+        // === EVENTS LADEN ===
+        async function loadEvents() {
+            try {
+                const url = currentUser ? '/api/events/with-status' : '/api/events';
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('Fehler beim Laden');
+                const events = await res.json();
+                const container = document.getElementById('eventList');
+                container.innerHTML = '';
+                if (events.length === 0) {
+                    container.innerHTML = '<p>Keine Events vorhanden</p>';
+                    return;
+                }
+                events.forEach(event => {
+                    const card = createEventCard(event);
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                document.getElementById('eventList').innerHTML = '<p>Fehler beim Laden der Events</p>';
+            }
+        }
+
+        function createEventCard(event) {
+            const card = document.createElement('div');
+            card.className = 'event-card';
+            const date = new Date(event.date).toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' });
+
+            let buttons = '';
+            if (!currentUser) {
+                buttons = `<a href="/login.html" class="btn btn-pay">Jetzt teilnehmen</a>`;
+            } else {
+                if (event.userRegistered) {
+                    if (event.currentRound === 0) {
+                        const paymentText = event.userPaymentMethod === 'paypal' 
+                            ? (event.userPaid ? 'bezahlt' : 'nicht bezahlt') 
+                            : 'Barzahlung';
+                        buttons = `
+                            <button class="btn btn-pay" disabled style="opacity:0.5;">Angemeldet (${paymentText})</button>
+                            <button class="btn btn-small btn-danger" onclick="cancelRegistration(${event.id})">Stornieren</button>
+                        `;
+                    } else {
+                        buttons = `<button class="btn btn-pay" disabled>Angemeldet (Event läuft)</button>`;
+                    }
+                } else {
+                    buttons = `<button class="btn btn-pay" onclick="openPaymentModal(${event.id}, '${event.title}')">Jetzt teilnehmen</button>`;
+                }
+            }
+
+            card.innerHTML = `
+                <div class="event-image">
+                    <i class="${event.image || 'fas fa-fish'}"></i>
+                </div>
+                <div class="event-details">
+                    <h3>${event.title}</h3>
+                    <p class="event-date"><i class="far fa-calendar-alt"></i> ${date}</p>
+                    <p class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                    <p class="event-description">${event.description}</p>
+                    <p class="event-price">Teilnahmegebühr: ${event.price}€</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                        ${buttons}
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        // === MODAL-FUNKTIONEN ===
+        function openPaymentModal(eventId, title) {
+            selectedEventId = eventId;
+            document.getElementById('modalEventTitle').innerText = `Teilnahme an: ${title}`;
+            document.getElementById('paymentModal').style.display = 'flex';
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+            selectedPaymentMethod = null;
+            document.getElementById('confirmPaymentBtn').disabled = true;
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').style.display = 'none';
+        }
+
+        function selectPaymentMethod(method) {
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.toggle('selected', opt.dataset.method === method);
+            });
+            selectedPaymentMethod = method;
+            document.getElementById('confirmPaymentBtn').disabled = false;
+        }
+
+        async function confirmRegistration() {
+            if (!selectedEventId || !selectedPaymentMethod) return;
+            const btn = document.getElementById('confirmPaymentBtn');
+            btn.disabled = true;
+            btn.innerText = '...';
+            try {
+                const res = await fetch(`/api/events/${selectedEventId}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ paymentMethod: selectedPaymentMethod })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Erfolgreich angemeldet!');
+                    closePaymentModal();
+                    loadEvents();
+                } else {
+                    alert('Fehler: ' + data.error);
+                }
+            } catch (e) {
+                alert('Fehler bei der Anmeldung');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Bestätigen';
+            }
+        }
+
+        async function cancelRegistration(eventId) {
+            if (!confirm('Möchtest du deine Teilnahme wirklich stornieren?')) return;
+            try {
+                const res = await fetch(`/api/events/${eventId}/cancel`, { method: 'POST' });
+                const data = await res.json();
+                if (data.success) {
+                    alert('Teilnahme storniert');
+                    loadEvents();
+                } else {
+                    alert('Fehler: ' + data.error);
+                }
+            } catch (e) {
+                alert('Fehler bei der Stornierung');
+            }
+        }
+    </script>
+</body>
+</html>
