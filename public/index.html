@@ -6,6 +6,7 @@
     <title>Angeln-Eventplaner | Deutschland</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* === BASIS-STYLES === */
         * {
             margin: 0;
             padding: 0;
@@ -23,7 +24,7 @@
             padding: 0 15px;
         }
 
-        /* Header & Navigation */
+        /* === HEADER & NAVIGATION === */
         .header {
             background: linear-gradient(135deg, #0D3B66, #1e5a7a);
             color: white;
@@ -72,6 +73,7 @@
             border-radius: 30px;
             transition: background 0.3s;
             white-space: nowrap;
+            cursor: pointer;
         }
         .nav a:hover,
         .nav a.active {
@@ -109,10 +111,10 @@
             }
         }
 
-        /* Hero Section */
+        /* === HERO === */
         .hero {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1508873696983-2dfd5898f08b') center/cover no-repeat;
-            min-height: 80vh;
+            min-height: 70vh;
             display: flex;
             align-items: center;
             text-align: center;
@@ -124,39 +126,32 @@
             padding: 40px 20px;
         }
         .hero h2 {
-            font-size: 3.5rem;
+            font-size: 3rem;
             margin-bottom: 20px;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
         }
         .hero p {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             margin-bottom: 30px;
-            opacity: 0.95;
         }
-        /* VERBESSERTER BUTTON */
-        .hero .btn {
+        .btn {
             display: inline-block;
             background: linear-gradient(135deg, #2A9D8F, #0D3B66);
             color: white;
-            padding: 18px 45px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            border-radius: 60px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            padding: 14px 35px;
+            border-radius: 50px;
             text-decoration: none;
-            transition: all 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s;
             border: 2px solid transparent;
         }
-        .hero .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            background: linear-gradient(135deg, #0D3B66, #2A9D8F);
+        .btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.4);
             border-color: #f4d03f;
         }
 
-        /* Events Section */
+        /* === EVENTS === */
         .events {
             padding: 80px 0;
             background: white;
@@ -273,7 +268,7 @@
             pointer-events: none;
         }
 
-        /* About */
+        /* === ABOUT === */
         .about {
             background: #f0f5fa;
             padding: 80px 0;
@@ -286,7 +281,7 @@
             color: #2c3e50;
         }
 
-        /* Footer */
+        /* === FOOTER === */
         .footer {
             background: #0D3B66;
             color: white;
@@ -298,7 +293,7 @@
             text-decoration: none;
         }
 
-        /* Cookie-Banner */
+        /* === COOKIE-BANNER === */
         #cookieBanner {
             display: none;
             position: fixed;
@@ -326,7 +321,7 @@
             border: 1px solid white;
         }
 
-        /* Modal */
+        /* === MODAL === */
         #paymentModal {
             display: none;
             position: fixed;
@@ -406,24 +401,17 @@
             background: #e0e0e0;
         }
 
-        /* Mobile Optimierungen */
+        /* === MOBILE OPTIMIERUNGEN === */
         @media (max-width: 768px) {
-            .hero h2 { font-size: 2.2rem; }
-            .hero p { font-size: 1.1rem; }
-            .hero .btn {
-                padding: 14px 30px;
-                font-size: 1.2rem;
-            }
+            .hero h2 { font-size: 2rem; }
+            .hero p { font-size: 1rem; }
+            .btn { padding: 12px 25px; font-size: 1rem; }
         }
         @media (max-width: 480px) {
             .event-list { grid-template-columns: 1fr; }
             .hero { min-height: 60vh; }
             .logo h1 { font-size: 1.3rem; }
             .logo i { font-size: 1.8rem; }
-            .hero .btn {
-                padding: 12px 25px;
-                font-size: 1rem;
-            }
         }
     </style>
 </head>
@@ -446,6 +434,7 @@
                     <li><a href="/register.html" id="registerLink">Registrieren</a></li>
                     <li><a href="/user-events.html" id="userEventsLink" style="display: none;">Meine Events</a></li>
                     <li><a href="/admin" id="adminLink" style="display: none;">Admin</a></li>
+                    <li><a href="#" id="logoutLink" style="display: none;" onclick="logout()">Abmelden</a></li>
                 </ul>
             </nav>
         </div>
@@ -568,8 +557,11 @@
                     document.getElementById('loginLink').style.display = 'none';
                     document.getElementById('registerLink').style.display = 'none';
                     document.getElementById('userEventsLink').style.display = 'inline-block';
+                    document.getElementById('logoutLink').style.display = 'inline-block'; // Abmelden sichtbar
                     if (currentUser.role === 'admin') {
                         document.getElementById('adminLink').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('adminLink').style.display = 'none';
                     }
                 } else {
                     currentUser = null;
@@ -577,11 +569,27 @@
                     document.getElementById('registerLink').style.display = 'inline-block';
                     document.getElementById('userEventsLink').style.display = 'none';
                     document.getElementById('adminLink').style.display = 'none';
+                    document.getElementById('logoutLink').style.display = 'none';
                 }
             } catch (e) {
                 currentUser = null;
+                document.getElementById('loginLink').style.display = 'inline-block';
+                document.getElementById('registerLink').style.display = 'inline-block';
+                document.getElementById('userEventsLink').style.display = 'none';
+                document.getElementById('adminLink').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
             }
             loadEvents();
+        }
+
+        // === LOGOUT ===
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (e) {
+                console.error('Logout fehlgeschlagen', e);
+            }
         }
 
         // === EVENTS LADEN ===

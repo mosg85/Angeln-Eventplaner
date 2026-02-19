@@ -72,6 +72,7 @@
             border-radius: 30px;
             transition: background 0.3s;
             white-space: nowrap;
+            cursor: pointer;
         }
         .nav a:hover,
         .nav a.active {
@@ -124,7 +125,7 @@
             gap: 10px;
         }
 
-        /* Event-Karten – genau wie auf der Startseite */
+        /* Event-Karten */
         .event-card {
             background: white;
             border-radius: 20px;
@@ -305,9 +306,10 @@
                 <ul id="menu">
                     <li><a href="/">Start</a></li>
                     <li><a href="/user-events.html" class="active">Meine Events</a></li>
-                    <li><a href="/login.html" id="loginLink">Anmelden</a></li>
-                    <li><a href="/register.html" id="registerLink">Registrieren</a></li>
+                    <li><a href="/login.html" id="loginLink" style="display: none;">Anmelden</a></li>
+                    <li><a href="/register.html" id="registerLink" style="display: none;">Registrieren</a></li>
                     <li><a href="/admin" id="adminLink" style="display: none;">Admin</a></li>
+                    <li><a href="#" id="logoutLink" onclick="logout()">Abmelden</a></li>
                 </ul>
             </nav>
         </div>
@@ -368,7 +370,10 @@
                     document.getElementById('registerLink').style.display = 'none';
                     if (user.role === 'admin') {
                         document.getElementById('adminLink').style.display = 'inline-block';
+                    } else {
+                        document.getElementById('adminLink').style.display = 'none';
                     }
+                    // Abmelden-Link ist immer sichtbar (da eingeloggt)
                 } else {
                     // Nicht eingeloggt -> zurück zur Startseite
                     window.location.href = '/';
@@ -379,6 +384,16 @@
                 return;
             }
             loadUserEvents();
+        }
+
+        // === LOGOUT ===
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (e) {
+                console.error('Logout fehlgeschlagen', e);
+            }
         }
 
         // === USER-EVENTS LADEN ===
