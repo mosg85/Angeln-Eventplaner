@@ -557,7 +557,7 @@
                     document.getElementById('loginLink').style.display = 'none';
                     document.getElementById('registerLink').style.display = 'none';
                     document.getElementById('userEventsLink').style.display = 'inline-block';
-                    document.getElementById('logoutLink').style.display = 'inline-block'; // Abmelden sichtbar
+                    document.getElementById('logoutLink').style.display = 'inline-block';
                     if (currentUser.role === 'admin') {
                         document.getElementById('adminLink').style.display = 'inline-block';
                     } else {
@@ -573,6 +573,7 @@
                 }
             } catch (e) {
                 currentUser = null;
+                // Default: Links für nicht eingeloggte anzeigen
                 document.getElementById('loginLink').style.display = 'inline-block';
                 document.getElementById('registerLink').style.display = 'inline-block';
                 document.getElementById('userEventsLink').style.display = 'none';
@@ -680,6 +681,7 @@
             document.getElementById('confirmPaymentBtn').disabled = false;
         }
 
+        // === ANMELDUNG MIT WEITERLEITUNG ===
         async function confirmRegistration() {
             if (!selectedEventId || !selectedPaymentMethod) return;
             const btn = document.getElementById('confirmPaymentBtn');
@@ -693,20 +695,23 @@
                 });
                 const data = await res.json();
                 if (data.success) {
-                    alert('Erfolgreich angemeldet!');
+                    // Modal schließen
                     closePaymentModal();
-                    loadEvents();
+                    // Weiterleitung zu "Meine Events"
+                    window.location.href = '/user-events.html';
                 } else {
                     alert('Fehler: ' + data.error);
+                    btn.disabled = false;
+                    btn.innerText = 'Bestätigen';
                 }
             } catch (e) {
                 alert('Fehler bei der Anmeldung');
-            } finally {
                 btn.disabled = false;
                 btn.innerText = 'Bestätigen';
             }
         }
 
+        // === STORNIERUNG ===
         async function cancelRegistration(eventId) {
             if (!confirm('Möchtest du deine Teilnahme wirklich stornieren?')) return;
             try {
