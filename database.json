@@ -32,6 +32,15 @@
       "role": "user",
       "phone": "",
       "createdAt": "2026-02-18T18:15:20.547Z"
+    },
+    {
+      "id": 5,
+      "name": "Tony ",
+      "email": "tony@angeln-eventplaner.de",
+      "password": "$2b$10$qtkNCRIYINPRQSYjpIlJZOcrG7ZCPpAtOhyjZZyxbrweTusDCGpl2",
+      "role": "admin",
+      "phone": "01510000000",
+      "createdAt": "2026-02-19T14:33:34.739Z"
     }
   ],
   "events": [
@@ -86,9 +95,14 @@
           "userId": 4,
           "paymentMethod": "paypal",
           "paid": false
+        },
+        {
+          "userId": 5,
+          "paymentMethod": "cash",
+          "paid": false
         }
       ],
-      "currentParticipants": 1,
+      "currentParticipants": 2,
       "createdAt": "2026-02-18T12:16:40.804Z",
       "createdBy": 1
     },
