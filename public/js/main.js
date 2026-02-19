@@ -1,6 +1,6 @@
 // main.js - Frontend-Logik für Angel-Event-Planer
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('✅ Angel-Event-Planer geladen');
+    console.log('✅ Angeln-Eventplaner geladen');
     
     // Alert bei Klick auf Teilnehmen (später durch PayPal ersetzt)
     const payButtons = document.querySelectorAll('.btn-pay');
