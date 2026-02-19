@@ -23,7 +23,7 @@
             padding: 0 15px;
         }
 
-        /* Header & Navigation (identisch mit Startseite) */
+        /* === HEADER & NAVIGATION (mobil optimiert) === */
         .header {
             background: linear-gradient(135deg, #0D3B66, #1e5a7a);
             color: white;
@@ -110,7 +110,7 @@
             }
         }
 
-        /* Hauptbereich */
+        /* === HAUPTBEREICH MEINE EVENTS === */
         .user-events-container {
             padding: 40px 20px;
             max-width: 1000px;
@@ -125,7 +125,7 @@
             gap: 10px;
         }
 
-        /* Event-Karten */
+        /* === EVENT-KARTEN === */
         .event-card {
             background: white;
             border-radius: 20px;
@@ -262,7 +262,7 @@
             color: #666;
         }
 
-        /* Footer */
+        /* === FOOTER === */
         .footer {
             background: #0D3B66;
             color: white;
@@ -275,7 +275,7 @@
             text-decoration: none;
         }
 
-        /* Mobile Optimierung */
+        /* === MOBILE OPTIMIERUNG === */
         @media (max-width: 600px) {
             .event-card {
                 flex-direction: column;
@@ -333,7 +333,6 @@
     </footer>
 
     <script>
-        // === MENÜ-TOGGLE ===
         document.addEventListener('DOMContentLoaded', function() {
             const toggle = document.getElementById('menuToggle');
             const menu = document.getElementById('menu');
@@ -353,19 +352,15 @@
                     }
                 });
             }
-
-            // Benutzerstatus prüfen und Events laden
             checkUserAndLoad();
         });
 
-        // === LOGIN-STATUS ===
         async function checkUserAndLoad() {
             try {
                 const res = await fetch('/api/me');
                 if (res.ok) {
                     const data = await res.json();
                     const user = data.user;
-                    // Links anpassen
                     document.getElementById('loginLink').style.display = 'none';
                     document.getElementById('registerLink').style.display = 'none';
                     if (user.role === 'admin') {
@@ -373,9 +368,7 @@
                     } else {
                         document.getElementById('adminLink').style.display = 'none';
                     }
-                    // Abmelden-Link ist immer sichtbar (da eingeloggt)
                 } else {
-                    // Nicht eingeloggt -> zurück zur Startseite
                     window.location.href = '/';
                     return;
                 }
@@ -386,7 +379,6 @@
             loadUserEvents();
         }
 
-        // === LOGOUT ===
         async function logout() {
             try {
                 await fetch('/api/logout', { method: 'POST' });
@@ -396,13 +388,10 @@
             }
         }
 
-        // === USER-EVENTS LADEN ===
         async function loadUserEvents() {
             try {
                 const response = await fetch('/api/user/events');
-                if (!response.ok) {
-                    throw new Error('Fehler beim Laden');
-                }
+                if (!response.ok) throw new Error('Fehler beim Laden');
                 const events = await response.json();
                 const container = document.getElementById('eventsList');
                 container.innerHTML = '';
@@ -427,7 +416,6 @@
             }
         }
 
-        // === EVENT-KARTE ERSTELLEN ===
         function createEventCard(event) {
             const card = document.createElement('div');
             card.className = 'event-card';
@@ -436,7 +424,6 @@
                 day: 'numeric', month: 'long', year: 'numeric'
             });
 
-            // Status-Badge
             let statusClass = '';
             let statusText = '';
             if (event.userPaymentMethod === 'paypal') {
@@ -447,9 +434,9 @@
                 statusText = 'Barzahlung (vor Ort)';
             }
 
-            // Stornierungsbutton nur anzeigen, wenn Event noch nicht gestartet (currentRound === 0)
+            // Stornierungsbutton anzeigen, wenn Event noch nicht gestartet (currentRound === 0 oder undefined)
             let cancelButton = '';
-            if (event.currentRound === 0) {
+            if (event.currentRound === 0 || event.currentRound === undefined) {
                 cancelButton = `<button class="btn btn-small btn-danger" onclick="cancelEvent(${event.id})">Stornieren</button>`;
             }
 
@@ -477,7 +464,6 @@
             return card;
         }
 
-        // === STORNIERUNG ===
         async function cancelEvent(eventId) {
             if (!confirm('Möchtest du deine Teilnahme wirklich stornieren?')) return;
             try {
@@ -485,7 +471,7 @@
                 const data = await response.json();
                 if (data.success) {
                     alert('Teilnahme erfolgreich storniert.');
-                    loadUserEvents(); // Liste neu laden
+                    loadUserEvents();
                 } else {
                     alert('Fehler: ' + (data.error || 'Unbekannter Fehler'));
                 }
